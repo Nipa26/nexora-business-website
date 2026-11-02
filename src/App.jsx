@@ -1,7 +1,11 @@
-const { h1 } = require('framer-motion/client');
+import Navbar from './components/Navbar';
 
 const App = () => {
-    return <h1>hello</h1>;
+    return (
+        <div className="min-h-screen bg-slate-950">
+            <Navbar />
+        </div>
+    );
 };
 
 export default App;
