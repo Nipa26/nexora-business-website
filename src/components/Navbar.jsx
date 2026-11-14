@@ -19,7 +19,7 @@ function Navbar() {
     };
 
     return (
-        <header className="fixed top-0 left-0 z-50 w-full px-4 pt-5 sm:px-8">
+        <header className="sticky top-0 z-50 w-full border-b border-[#d6b477]/20 bg-[#0b0b0b] shadow-lg shadow-black/10">
             <nav className="mx-auto flex max-w-8xl items-center justify-between border border-[#c9a96e]/20 bg-[#0b0b0b]/95 px-5 py-4 shadow-2xl shadow-black/40 backdrop-blur-xl sm:px-8">
                 {/* Logo */}
                 <a href="#home" className="group flex items-center gap-3">
