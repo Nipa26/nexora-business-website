@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight, ExternalLink, Layers3, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const projects = [
     {
@@ -73,13 +73,102 @@ const projects = [
 
 const categories = ['All Projects', 'Web Design', 'E-commerce', 'Branding'];
 
+function ProjectCard({ project, index = 0 }) {
+    return (
+        <motion.article
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: index * 0.05 }}
+            className="group h-full overflow-hidden rounded-3xl border border-gray-200 bg-white transition-all duration-500 hover:-translate-y-2 hover:border-[#d6b477]/60 hover:shadow-2xl hover:shadow-[#d6b477]/10"
+        >
+            {/* Project Preview */}
+            <div
+                className={`relative m-3 flex aspect-4/3 items-center justify-center overflow-hidden rounded-2xl ${project.theme}`}
+            >
+                <div className="absolute -right-12 -top-12 h-52 w-52 rounded-full border border-[#d6b477]/20 transition-transform duration-700 group-hover:scale-125" />
+
+                <div className="absolute -bottom-16 -left-12 h-52 w-52 rounded-full border border-[#d6b477]/20 transition-transform duration-700 group-hover:scale-125" />
+
+                <div className="relative z-10 flex w-full flex-col items-center px-6 text-center">
+                    <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#d6b477]/40 bg-[#d6b477]/10 text-[#d6b477] transition duration-500 group-hover:rotate-6 group-hover:scale-110">
+                        <Layers3 size={27} />
+                    </div>
+
+                    <span className="text-[10px] font-semibold tracking-[3px] text-[#d6b477]/70">
+                        NEXORA PROJECT {project.number}
+                    </span>
+
+                    <h3 className="mt-3 text-2xl font-bold text-white sm:text-3xl">{project.title}</h3>
+
+                    <p className="mt-2 text-xs text-gray-400">{project.type}</p>
+                </div>
+
+                <div className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-[#d6b477]/30 bg-black/20 text-[#d6b477] transition duration-300 group-hover:rotate-45 group-hover:bg-[#d6b477] group-hover:text-black">
+                    <ArrowUpRight size={19} />
+                </div>
+            </div>
+
+            {/* Project Details */}
+            <div className="px-6 pb-7 pt-3">
+                <div className="flex items-center justify-between gap-3">
+                    <span className="text-xs font-semibold tracking-wider text-[#9a763e]">{project.category}</span>
+
+                    <span className="text-xs font-medium text-gray-300">{project.number} / 06</span>
+                </div>
+
+                <h3 className="mt-3 text-xl font-bold text-[#0b0b0b]">{project.title}</h3>
+
+                <p className="mt-3 text-sm leading-7 text-gray-500">{project.description}</p>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                        <span
+                            key={tag}
+                            className="rounded-full bg-[#f7f5f0] px-3 py-1.5 text-[10px] font-medium text-[#8a7657]"
+                        >
+                            {tag}
+                        </span>
+                    ))}
+                </div>
+
+                <div className="mt-6 border-t border-gray-100 pt-5">
+                    <a
+                        href="#contact"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#0b0b0b] transition-colors duration-300 hover:text-[#a47d3e]"
+                    >
+                        Discuss Similar Project
+                        <ExternalLink size={15} />
+                    </a>
+                </div>
+            </div>
+        </motion.article>
+    );
+}
+
 function Portfolio() {
     const [activeCategory, setActiveCategory] = useState('All Projects');
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const filteredProjects =
         activeCategory === 'All Projects'
             ? projects
             : projects.filter((project) => project.category === activeCategory);
+
+    // Mobile Auto Slide
+    useEffect(() => {
+        if (filteredProjects.length <= 1) return;
+
+        const interval = setInterval(() => {
+            setActiveIndex((current) => (current + 1) % filteredProjects.length);
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [filteredProjects.length, activeCategory]);
+
+    const handleCategoryChange = (category) => {
+        setActiveCategory(category);
+        setActiveIndex(0);
+    };
 
     return (
         <section id="portfolio" className="relative overflow-hidden bg-[#faf9f6] px-4 py-24 sm:px-8 lg:py-32">
@@ -112,12 +201,12 @@ function Portfolio() {
                 </motion.div>
 
                 {/* Category Filter */}
-                <div className="mb-12 flex flex-wrap items-center justify-center gap-3">
+                <div className="mx-auto mb-12 grid max-w-md grid-cols-2 gap-3 md:flex md:max-w-none md:flex-wrap md:justify-center">
                     {categories.map((category) => (
                         <button
                             key={category}
-                            onClick={() => setActiveCategory(category)}
-                            className={`rounded-full px-5 py-3 text-xs font-semibold transition-all duration-300 sm:text-sm ${
+                            onClick={() => handleCategoryChange(category)}
+                            className={`w-full rounded-full px-5 py-3 text-xs font-semibold transition-all duration-300 sm:text-sm md:w-auto ${
                                 activeCategory === category
                                     ? 'bg-[#0b0b0b] text-[#d6b477] shadow-lg shadow-black/10'
                                     : 'border border-gray-200 bg-white text-gray-500 hover:border-[#d6b477] hover:text-[#9a763e]'
@@ -128,84 +217,41 @@ function Portfolio() {
                     ))}
                 </div>
 
-                {/* Project Grid */}
-                <motion.div layout className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredProjects.map((project, index) => (
-                        <motion.article
-                            layout
-                            key={project.id}
-                            initial={{ opacity: 0, y: 25 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                                duration: 0.45,
-                                delay: index * 0.05,
-                            }}
-                            className="group overflow-hidden rounded-3xl border border-gray-200 bg-white transition-all duration-500 hover:-translate-y-2 hover:border-[#d6b477]/60 hover:shadow-2xl hover:shadow-[#d6b477]/10"
-                        >
-                            {/* Project Preview */}
-                            <div
-                                className={`relative m-3 flex aspect-4/3 items-center justify-center overflow-hidden rounded-2xl ${project.theme}`}
+                {/* Mobile Auto Slider */}
+                <div className="md:hidden">
+                    <div className="overflow-hidden">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={`${activeCategory}-${activeIndex}`}
+                                initial={{ opacity: 0, x: 40 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -40 }}
+                                transition={{ duration: 0.8, ease: 'easeInOut' }}
                             >
-                                <div className="absolute -right-12 -top-12 h-52 w-52 rounded-full border border-[#d6b477]/20 transition-transform duration-700 group-hover:scale-125" />
+                                <ProjectCard project={filteredProjects[activeIndex]} />
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
 
-                                <div className="absolute -bottom-16 -left-12 h-52 w-52 rounded-full border border-[#d6b477]/20 transition-transform duration-700 group-hover:scale-125" />
+                    {/* Dot Indicators */}
+                    <div className="mt-8 flex justify-center gap-2">
+                        {filteredProjects.map((project, index) => (
+                            <button
+                                key={project.id}
+                                onClick={() => setActiveIndex(index)}
+                                aria-label={`Show ${project.title}`}
+                                className={`h-2 rounded-full transition-all duration-500 ${
+                                    activeIndex === index ? 'w-8 bg-[#d6b477]' : 'w-2 bg-[#d6b477]/30'
+                                }`}
+                            />
+                        ))}
+                    </div>
+                </div>
 
-                                <div className="relative z-10 flex w-full flex-col items-center px-6 text-center">
-                                    <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#d6b477]/40 bg-[#d6b477]/10 text-[#d6b477] transition duration-500 group-hover:rotate-6 group-hover:scale-110">
-                                        <Layers3 size={27} />
-                                    </div>
-
-                                    <span className="text-[10px] font-semibold tracking-[3px] text-[#d6b477]/70">
-                                        NEXORA PROJECT {project.number}
-                                    </span>
-
-                                    <h3 className="mt-3 text-2xl font-bold text-white sm:text-3xl">{project.title}</h3>
-
-                                    <p className="mt-2 text-xs text-gray-400">{project.type}</p>
-                                </div>
-
-                                {/* Preview Arrow */}
-                                <div className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-[#d6b477]/30 bg-black/20 text-[#d6b477] transition duration-300 group-hover:rotate-45 group-hover:bg-[#d6b477] group-hover:text-black">
-                                    <ArrowUpRight size={19} />
-                                </div>
-                            </div>
-
-                            {/* Project Details */}
-                            <div className="px-6 pb-7 pt-3">
-                                <div className="flex items-center justify-between gap-3">
-                                    <span className="text-xs font-semibold tracking-wider text-[#9a763e]">
-                                        {project.category}
-                                    </span>
-
-                                    <span className="text-xs font-medium text-gray-300">{project.number} / 06</span>
-                                </div>
-
-                                <h3 className="mt-3 text-xl font-bold text-[#0b0b0b]">{project.title}</h3>
-
-                                <p className="mt-3 text-sm leading-7 text-gray-500">{project.description}</p>
-
-                                <div className="mt-5 flex flex-wrap gap-2">
-                                    {project.tags.map((tag) => (
-                                        <span
-                                            key={tag}
-                                            className="rounded-full bg-[#f7f5f0] px-3 py-1.5 text-[10px] font-medium text-[#8a7657]"
-                                        >
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-
-                                <div className="mt-6 border-t border-gray-100 pt-5">
-                                    <a
-                                        href="#contact"
-                                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#0b0b0b] transition-colors duration-300 hover:text-[#a47d3e]"
-                                    >
-                                        Discuss Similar Project
-                                        <ExternalLink size={15} />
-                                    </a>
-                                </div>
-                            </div>
-                        </motion.article>
+                {/* Desktop Project Grid */}
+                <motion.div layout className="hidden gap-7 sm:grid-cols-2 md:grid lg:grid-cols-3">
+                    {filteredProjects.map((project, index) => (
+                        <ProjectCard key={project.id} project={project} index={index} />
                     ))}
                 </motion.div>
 
