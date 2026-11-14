@@ -2,6 +2,7 @@ import About from './components/About';
 import Hero from './components/Hero';
 import Navbar from './components/Navbar';
 import Portfolio from './components/Portfolio';
+import Pricing from './components/pricing';
 import Services from './components/Services';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
             <About />
             <Services />
             <Portfolio />
+            <Pricing />
         </>
     );
 }
