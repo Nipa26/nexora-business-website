@@ -18,7 +18,7 @@ function Hero() {
 
             <div className="pointer-events-none absolute bottom-0 left-0 h-350px w-350px rounded-full bg-[#d6b477]/10 blur-[110px]" />
 
-            <div className="relative mx-auto grid w-full max-w-7xl items-center gap-16 lg:grid-cols-2">
+            <div className="relative mx-auto grid w-full max-w-8xl items-center gap-16 lg:grid-cols-2">
                 {/* Left Content */}
                 <motion.div
                     initial={{ opacity: 0, y: 35 }}
