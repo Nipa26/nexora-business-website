@@ -86,7 +86,7 @@ function Portfolio() {
             {/* Background Decoration */}
             <div className="pointer-events-none absolute -right-40 top-20 h-96 w-96 rounded-full bg-[#d6b477]/10 blur-[120px]" />
 
-            <div className="relative mx-auto max-w-7xl">
+            <div className="relative mx-auto max-w-8xl">
                 {/* Section Heading */}
                 <motion.div
                     initial={{ opacity: 0, y: 25 }}

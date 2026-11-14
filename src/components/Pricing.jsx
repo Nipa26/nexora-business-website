@@ -57,7 +57,7 @@ const plans = [
 function Pricing() {
     return (
         <section id="pricing" className="scroll-mt-24 bg-[#faf9f6] px-6 py-24 md:px-12 lg:px-20">
-            <div className="mx-auto max-w-7xl">
+            <div className="mx-auto max-w-8xl">
                 <motion.div
                     initial={{ opacity: 0, y: 25 }}
                     whileInView={{ opacity: 1, y: 0 }}
